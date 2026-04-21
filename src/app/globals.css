@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: oklch(0.97 0.01 280);
+  --bg-blob: oklch(0.88 0.06 280);
+  --accent: oklch(0.72 0.17 55);
+  --accent-hover: oklch(0.65 0.18 55);
+  --accent-fg: oklch(0.99 0 0);
+  --card: oklch(1 0 0);
+  --card-border: oklch(0.93 0.01 260);
+  --text-primary: oklch(0.18 0.02 260);
+  --text-secondary: oklch(0.52 0.02 260);
+  --text-muted: oklch(0.68 0.01 260);
+  --success: oklch(0.55 0.15 145);
+  --success-bg: oklch(0.95 0.05 145);
+  --warning: oklch(0.65 0.17 55);
+  --warning-bg: oklch(0.97 0.04 90);
+  --error: oklch(0.50 0.18 25);
+  --error-bg: oklch(0.96 0.04 25);
+  --sidebar-w: 240px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Papel {
+  ADMIN
+  RECEPCIONISTA
+  TERAPEUTA
+}
+
+enum TipoEspecialidade {
+  CLINICA
+  TERAPEUTICA
+}
+
+enum DiaSemana {
+  SEGUNDA
+  TERCA
+  QUARTA
+  QUINTA
+  SEXTA
+  SABADO
+}
+
+enum TipoAgendamento {
+  INDIVIDUAL
+  GRUPO
+}
+
+enum StatusAgendamento {
+  AGENDADO
+  CONFIRMADO
+  REALIZADO
+  CANCELADO
+  FALTOU
+}
+
+enum OrigemAgendamento {
+  MANUAL
+  AUTOMATICO
+}
+
+model User {
+  id             String        @id @default(cuid())
+  nome           String
+  email          String        @unique
+  senha          String
+  papel          Papel
+  ativo          Boolean       @default(true)
+  profissionalId String?       @unique
+  profissional   Profissional? @relation(fields: [profissionalId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Convenio {
+  id        String    @id @default(cuid())
+  nome      String
+  descricao String?
+  ativo     Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  pacientes Paciente[]
+}
+
+model Paciente {
+  id                  String    @id @default(cuid())
+  nome                String
+  dataNasc            DateTime?
+  cpf                 String?   @unique
+  telefone            String
+  telefone2           String?
+  email               String?
+  cep                 String?
+  logradouro          String?
+  numero              String?
+  complemento         String?
+  bairro              String?
+  cidade              String?
+  estado              String?
+  diagnostico         String?
+  observacoes         String?
+  perfil              String?
+  nomeResponsavel     String?
+  telefoneResponsavel String?
+  relacaoResponsavel  String?
+  convenioId          String?
+  convenio            Convenio? @relation(fields: [convenioId], references: [id])
+  ativo               Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  especialidades      PacienteEspecialidade[]
+  agendamentos        AgendamentoPaciente[]
+}
+
+model Especialidade {
+  id            String                  @id @default(cuid())
+  nome          String
+  tipo          TipoEspecialidade
+  descricao     String?
+  cor           String?
+  ativo         Boolean                 @default(true)
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  profissionais Profissional[]
+  agendamentos  Agendamento[]
+  pacientes     PacienteEspecialidade[]
+}
+
+model PacienteEspecialidade {
+  pacienteId      String
+  especialidadeId String
+  createdAt       DateTime      @default(now())
+  paciente        Paciente      @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+  especialidade   Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Cascade)
+
+  @@id([pacienteId, especialidadeId])
+}
+
+model Profissional {
+  id              String               @id @default(cuid())
+  nome            String
+  registro        String?
+  especialidadeId String
+  especialidade   Especialidade        @relation(fields: [especialidadeId], references: [id])
+  telefone        String?
+  email           String?
+  ativo           Boolean              @default(true)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  horarios        HorarioAtendimento[]
+  agendamentos    Agendamento[]
+  user            User?
+}
+
+model HorarioAtendimento {
+  id               String       @id @default(cuid())
+  profissionalId   String
+  profissional     Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+  diaSemana        DiaSemana
+  horaInicio       String
+  duracaoSessao    Int
+  intervaloSessoes Int          @default(0)
+  ativo            Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Agendamento {
+  id              String              @id @default(cuid())
+  tipo            TipoAgendamento
+  profissionalId  String
+  profissional    Profissional        @relation(fields: [profissionalId], references: [id])
+  especialidadeId String
+  especialidade   Especialidade       @relation(fields: [especialidadeId], references: [id])
+  dataHoraInicio  DateTime
+  dataHoraFim     DateTime
+  numeroSessoes   Int                 @default(1)
+  status          StatusAgendamento   @default(AGENDADO)
+  observacoes     String?
+  origem          OrigemAgendamento   @default(MANUAL)
+  recorrenciaId   String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  pacientes       AgendamentoPaciente[]
+}
+
+model AgendamentoPaciente {
+  agendamentoId String
+  pacienteId    String
+  agendamento   Agendamento @relation(fields: [agendamentoId], references: [id], onDelete: Cascade)
+  paciente      Paciente    @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+
+  @@id([agendamentoId, pacienteId])
+}

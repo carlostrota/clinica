@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest *)",
+      "Bash(npm install *)",
+      "Bash(npx prisma *)",
+      "Bash(pg_isready)",
+      "Bash(sc query *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e ' *)",
+      "Bash(node --experimental-vm-modules scripts/import-pacientes.mjs)",
+      "Bash(node -e \"const d=require\\('fs'\\);process.stdout.write\\(d.readFileSync\\('/dev/stdin','utf8'\\)\\)\")",
+      "Bash(node -r dotenv/config --input-type=module)",
+      "Bash(2>&1)",
+      "Bash(node scripts/import-pacientes.mjs)"
+    ]
+  }
+}
