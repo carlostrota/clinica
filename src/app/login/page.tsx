@@ -1,36 +1,25 @@
 "use client"
 
-import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useState, useTransition } from "react"
 import { LayoutBackground } from "@/components/layout-bg"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { loginAction } from "./actions"
 
 export default function LoginPage() {
-  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
+    startTransition(async () => {
+      const result = await loginAction(email, password)
+      if (result) setError(result)
     })
-
-    if (result?.error) {
-      setError("E-mail ou senha inválidos.")
-      setLoading(false)
-    } else {
-      router.push("/dashboard")
-    }
   }
 
   return (
@@ -44,7 +33,6 @@ export default function LoginPage() {
           boxShadow: "0 8px 32px oklch(0.18 0.02 260 / 0.08)",
         }}
       >
-        {/* Logo */}
         <div className="flex flex-col items-center gap-3 mb-8">
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl font-bold"
@@ -86,7 +74,7 @@ export default function LoginPage() {
             </p>
           )}
 
-          <Button type="submit" loading={loading} size="lg" className="w-full mt-2">
+          <Button type="submit" loading={isPending} size="lg" className="w-full mt-2">
             Entrar
           </Button>
         </form>
