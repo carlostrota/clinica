@@ -182,13 +182,17 @@ export function AgendamentoForm({ profissionais, especialidades, pacientes, init
     const url = initialData?.id ? `/api/agendamentos/${initialData.id}` : "/api/agendamentos"
     const method = initialData?.id ? "PUT" : "POST"
 
+    // Append "Z" so the browser treats the datetime-local string as UTC
+    // (the system stores times as naive-UTC: the UTC value equals what the user typed).
+    // Without "Z", new Date("2026-04-20T09:00") in a BRT browser becomes 12:00 UTC,
+    // shifting every save by +3 h.
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...data,
-        dataHoraInicio: new Date(data.dataHoraInicio).toISOString(),
-        dataHoraFim: new Date(data.dataHoraFim).toISOString(),
+        dataHoraInicio: new Date(data.dataHoraInicio + "Z").toISOString(),
+        dataHoraFim: new Date(data.dataHoraFim + "Z").toISOString(),
       }),
     })
 

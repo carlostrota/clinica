@@ -26,6 +26,10 @@ export async function POST(req: Request) {
   const body = await req.json()
   const { especialidadeIds, ...data } = body
 
+  // Empty strings for optional FK fields cause PG constraint errors
+  if (!data.convenioId) delete data.convenioId
+  if (!data.dataNasc) delete data.dataNasc
+
   const paciente = await prisma.paciente.create({
     data: {
       ...data,

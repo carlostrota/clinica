@@ -12,7 +12,10 @@
       "Bash(node -e \"const d=require\\('fs'\\);process.stdout.write\\(d.readFileSync\\('/dev/stdin','utf8'\\)\\)\")",
       "Bash(node -r dotenv/config --input-type=module)",
       "Bash(2>&1)",
-      "Bash(node scripts/import-pacientes.mjs)"
+      "Bash(node scripts/import-pacientes.mjs)",
+      "Bash(npx next *)",
+      "Bash(node -e \"const p = require\\('./node_modules/@prisma/client/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/prisma/package.json'\\); console.log\\(p.version\\)\")"
     ]
   }
 }
